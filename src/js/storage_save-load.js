@@ -16,7 +16,10 @@ const load = key => {
   }
 };
 
+const remove = key => localStorage.removeItem(key);
+
 export default {
   save,
   load,
+  remove,
 };
