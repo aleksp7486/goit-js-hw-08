@@ -2,7 +2,7 @@
 
 import Player from '@vimeo/player';
 var _ = require('lodash');
-import locSt from './storage_save-load';
+import locSt from './storage';
 
 const iframe = document.querySelector('#vimeo-player');
 const player = new Player(iframe);

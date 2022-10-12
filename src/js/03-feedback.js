@@ -2,29 +2,28 @@
 
 var _ = require('lodash');
 const validator = require('validator');
-import locSt from './storage_save-load';
+import locSt from './storage';
 
-const form = document.querySelector('.feedback-form');
-const formSubmitBtn = form.querySelector('button');
+const refs = {
+  form: document.querySelector('.feedback-form'),
+};
+// const form = document.querySelector('.feedback-form');
 
 const validateEmail = email => {
   return validator.isEmail(email);
 };
 const formStateKey = 'feedback-form-state';
 const formStateValue = {};
-const formEmail = form.elements.email;
-const forMessage = form.elements.message;
+const formEmail = refs.form.elements.email;
+const forMessage = refs.form.elements.message;
 const formLocStCurrentValue = locSt.load(formStateKey);
 
 setFormValueS();
-form.addEventListener('input', _.throttle(getFormValues, 500));
-formSubmitBtn.addEventListener('click', formSubmit);
+refs.form.addEventListener('input', _.debounce(getFormValues, 300));
+refs.form.addEventListener('submit', formSubmit);
 
 function setFormValueS() {
   if (!formLocStCurrentValue) {
-    return;
-  }
-  if (!(formLocStCurrentValue.email || formLocStCurrentValue.message)) {
     return;
   }
   formEmail.value = formLocStCurrentValue.email;
@@ -32,8 +31,7 @@ function setFormValueS() {
 }
 
 function getFormValues(evt) {
-  evt.preventDefault();
-  const formData = new FormData(form);
+  const formData = new FormData(refs.form);
   formData.forEach((value, name) => {
     formStateValue[`${name}`] = value;
   });
@@ -52,5 +50,5 @@ function formSubmit(evt) {
   }
   console.table(locSt.load(formStateKey));
   locSt.remove(formStateKey);
-  form.reset();
+  evt.currentTarget.reset();
 }
